@@ -1,5 +1,5 @@
 # D Notify Manager
-`A App that can filter text from otificaitions and play a different sound.`
+`A App that can filter text from notificaitions and play a different sound.`
 
 
 ## Steps
