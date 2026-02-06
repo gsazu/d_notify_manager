@@ -5,7 +5,8 @@ import androidx.room.*
 @Entity(tableName = "filters")
 data class FilterEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val keyword: String
+    val keyword: String,
+    val tune: String = ""
 )
 
 @Dao
@@ -16,8 +17,8 @@ interface FilterDao {
     @Insert
     suspend fun insert(filter: FilterEntity)
 
-    @Update
-    suspend fun update(filter: FilterEntity)
+//    @Update
+//    suspend fun update(filter: FilterEntity)
 
     @Delete
     suspend fun delete(filter: FilterEntity)

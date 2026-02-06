@@ -1,24 +1,24 @@
 package com.app.dnotifymanager.service
 
 import android.media.MediaPlayer
-import android.media.RingtoneManager
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.app.dnotifymanager.data.AppDatabase
-import androidx.room.Room
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 class NotificationReceiver : NotificationListenerService() {
 
     private lateinit var db: AppDatabase
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun onCreate() {
         super.onCreate()
-        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "filter-db").build()
+        db = AppDatabase.getDatabase(applicationContext)
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
@@ -32,35 +32,46 @@ class NotificationReceiver : NotificationListenerService() {
 
             for (filter in filters) {
                 if (title.contains(filter.keyword.lowercase()) || text.contains(filter.keyword.lowercase())) {
-                    playCustomTune()
+                    playCustomTune(filter.tune)
                     break
                 }
             }
         }
     }
 
-//    private fun playCustomTune() {
-//        try {
-//            val notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-//            val mp = MediaPlayer.create(applicationContext, notificationUri)
-//            mp.start()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//    }
-
-    private fun playCustomTune() {
-        try {
-            // R.raw.my_special_tune aapki file ka naam hai
-            val mp = MediaPlayer.create(applicationContext, com.app.dnotifymanager.R.raw.my_special_tune)
-
-            mp.setOnCompletionListener {
-                it.release() // Sound khatam hone par memory free kar dega
-            }
-
-            mp.start()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun playCustomTune(tuneUri: String) {
+        if (tuneUri.isBlank()) {
+            return
         }
+
+        try {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+
+            val uri = tuneUri.toUri()
+            mediaPlayer = MediaPlayer.create(applicationContext, uri).apply {
+                setOnCompletionListener {
+                    it.release()
+                    mediaPlayer = null
+                }
+                setOnErrorListener { mp, what, extra ->
+                    Log.e("NotificationReceiver", "MediaPlayer error: what=$what, extra=$extra")
+                    mp.release()
+                    mediaPlayer = null
+                    true
+                }
+                start()
+            }
+        } catch (e: Exception) {
+            Log.e("NotificationReceiver", "Error playing custom tune", e)
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }
