@@ -7,6 +7,8 @@ import android.util.Log
 import com.app.dnotifymanager.data.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
@@ -15,10 +17,16 @@ class NotificationReceiver : NotificationListenerService() {
 
     private lateinit var db: AppDatabase
     private var mediaPlayer: MediaPlayer? = null
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun onCreate() {
         super.onCreate()
         db = AppDatabase.getDatabase(applicationContext)
+    }
+
+    override fun onListenerConnected() {
+        super.onListenerConnected()
+        Log.d("NotificationReceiver", "Listener connected")
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
@@ -27,7 +35,7 @@ class NotificationReceiver : NotificationListenerService() {
 
         Log.d("notificationValues", "onNotificationPosted: $title, $text")
 
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             val filters = db.filterDao().getAllFilters().first()
 
             for (filter in filters) {
@@ -69,8 +77,19 @@ class NotificationReceiver : NotificationListenerService() {
         }
     }
 
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        Log.d("NotificationReceiver", "Listener disconnected")
+        cleanup()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        cleanup()
+    }
+
+    private fun cleanup() {
+        scope.cancel()
         mediaPlayer?.release()
         mediaPlayer = null
     }

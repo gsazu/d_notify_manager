@@ -24,7 +24,7 @@ interface FilterDao {
     suspend fun delete(filter: FilterEntity)
 }
 
-@Database(entities = [FilterEntity::class], version = 1)
+@Database(entities = [FilterEntity::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun filterDao(): FilterDao
 
@@ -38,7 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "filter-db"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }
