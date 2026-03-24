@@ -5,7 +5,8 @@ import androidx.room.*
 @Entity(tableName = "filters")
 data class FilterEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val keyword: String
+    val keyword: String,
+    val tune: String = ""
 )
 
 @Dao
@@ -16,14 +17,14 @@ interface FilterDao {
     @Insert
     suspend fun insert(filter: FilterEntity)
 
-    @Update
-    suspend fun update(filter: FilterEntity)
+//    @Update
+//    suspend fun update(filter: FilterEntity)
 
     @Delete
     suspend fun delete(filter: FilterEntity)
 }
 
-@Database(entities = [FilterEntity::class], version = 1)
+@Database(entities = [FilterEntity::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun filterDao(): FilterDao
 
@@ -37,7 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "filter-db"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

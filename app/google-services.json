@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "606466678324",
+    "project_id": "dnotifymanager",
+    "storage_bucket": "dnotifymanager.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606466678324:android:cae9529433025b88437461",
+        "android_client_info": {
+          "package_name": "com.app.dnotifymanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH9LTx9Qdsk8OA8WjXWKjIXqOAdobES1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

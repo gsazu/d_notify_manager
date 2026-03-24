@@ -12,6 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.app.dnotifymanager.data.AppDatabase
 import com.app.dnotifymanager.ui.AddFilterScreen
 import com.app.dnotifymanager.ui.MainScreen
@@ -36,12 +39,20 @@ class MainActivity : ComponentActivity() {
                 }
 
                 if (hasNotificationAccess) {
-                    var currentScreen by remember { mutableStateOf("main") }
-
-                    if (currentScreen == "main") {
-                        MainScreen(dao = dao, onAddClick = { currentScreen = "add" })
-                    } else {
-                        AddFilterScreen(dao = dao, onBack = { currentScreen = "main" })
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "main") {
+                        composable("main") {
+                            MainScreen(
+                                dao = dao,
+                                onAddClick = { navController.navigate("add") }
+                            )
+                        }
+                        composable("add") {
+                            AddFilterScreen(
+                                dao = dao,
+                                onBack = { navController.popBackStack() }
+                            )
+                        }
                     }
                 } else {
                     NotificationPermissionScreen(
