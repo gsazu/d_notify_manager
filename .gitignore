@@ -1,0 +1,40 @@
+# Android Studio / IntelliJ
+*.iml
+.gradle
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+
+# Build outputs
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Local config — DO NOT commit (contains your SDK path & username)
+local.properties
+
+# Google Services — DO NOT commit (use GitHub Secrets instead)
+google-services.json
+**/google-services.json
+
+# Firebase
+google-services.xml
+**/google-services.xml
+
+# Keystore / signing files — very sensitive
+*.jks
+*.keystore
+key.properties
+
+# API keys / secrets
+secrets.properties
+*.env
+.env
