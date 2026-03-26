@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.padding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
@@ -20,7 +21,10 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 @Composable
 fun PermissionRequester(content: @Composable () -> Unit) {
     val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        listOf(Manifest.permission.READ_MEDIA_AUDIO)
+        listOf(
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
     } else {
         listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
@@ -35,10 +39,19 @@ fun PermissionRequester(content: @Composable () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Storage permission is required to select audio files.")
+            val text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                "Storage and Notification permissions are required to select audio files and show notifications."
+            } else {
+                "Storage permission is required to select audio files."
+            }
+            androidx.compose.material3.Text(
+                text = text,
+                modifier = Modifier.padding(16.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
-                Text("Request Permission")
+                androidx.compose.material3.Text("Request Permission")
             }
         }
     }
