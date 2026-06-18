@@ -1,21 +1,33 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Project-specific ProGuard rules for DNotifyManager
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep Room Database and Entities
+-keep @androidx.room.Entity class *
+-keep class * extends androidx.room.RoomDatabase
+-keep class com.app.dnotifymanager.data.** { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep Notification Listener Service
+-keep class com.app.dnotifymanager.service.NotificationReceiver { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Kotlin Coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepclassmembernames class kotlinx.coroutines.android.HandlerContext {
+    java.lang.String name;
+}
+
+# General optimizations
+-repackageclasses ''
+-allowaccessmodification
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
+
+# Strip Log calls in release to save size and improve security
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
+
+# Keep Compose internal names for stability
+-keepclassmembers class androidx.compose.runtime.Recomposer {
+    private androidx.compose.runtime.Recomposer$Companion Companion;
+}

@@ -21,17 +21,19 @@
 # Local config — DO NOT commit (contains your SDK path & username)
 local.properties
 
-# Google Services — DO NOT commit (use GitHub Secrets instead)
+# Google Services — DO NOT commit
 google-services.json
 **/google-services.json
+app/google-services.json
 
 # Firebase
 google-services.xml
 **/google-services.xml
 
-# Keystore / signing files — very sensitive
+# Keystore / signing files
 *.jks
 *.keystore
+DNotify_Manager_Key.jks
 key.properties
 
 # API keys / secrets

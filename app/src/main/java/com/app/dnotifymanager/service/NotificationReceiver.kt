@@ -151,10 +151,11 @@ class NotificationReceiver : NotificationListenerService() {
         ).build()
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.notification_icon)
             .setContentTitle(matchedTitle.ifBlank { "Matched Notification" })
             .setContentText(matchedText)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setBadgeIconType(R.drawable.notification_icon)
             .setDefaults(0)
             .setSilent(true)
             .setAutoCancel(false)
